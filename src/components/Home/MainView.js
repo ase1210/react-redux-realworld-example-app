@@ -3,6 +3,7 @@ import React from 'react';
 import agent from '../../agent';
 import { connect } from 'react-redux';
 import { CHANGE_TAB } from '../../constants/actionTypes';
+import AuthorList from '../AuthorList';
 
 const YourFeedTab = props => {
   if (props.token) {
@@ -13,9 +14,9 @@ const YourFeedTab = props => {
 
     return (
       <li className="nav-item">
-        <a  href=""
-            className={ props.tab === 'feed' ? 'nav-link active' : 'nav-link' }
-            onClick={clickHandler}>
+        <a href=""
+          className={props.tab === 'feed' ? 'nav-link active' : 'nav-link'}
+          onClick={clickHandler}>
           Your Feed
         </a>
       </li>
@@ -33,9 +34,26 @@ const GlobalFeedTab = props => {
     <li className="nav-item">
       <a
         href=""
-        className={ props.tab === 'all' ? 'nav-link active' : 'nav-link' }
+        className={props.tab === 'all' ? 'nav-link active' : 'nav-link'}
         onClick={clickHandler}>
         Global Feed
+      </a>
+    </li>
+  );
+};
+
+const AuthorsFeedTab = props => {
+  const clickHandler = ev => {
+    ev.preventDefault();
+    props.onTabClick('authors', agent.Articles.authors, agent.Articles.authors());
+  };
+  return (
+    <li className="nav-item">
+      <a
+        href=""
+        className={props.tab === 'authors' ? 'nav-link active' : 'nav-link'}
+        onClick={clickHandler}>
+        Authors
       </a>
     </li>
   );
@@ -57,6 +75,7 @@ const TagFilterTab = props => {
 
 const mapStateToProps = state => ({
   ...state.articleList,
+  ...state.authorList,
   tags: state.home.tags,
   token: state.common.token
 });
@@ -78,17 +97,27 @@ const MainView = props => {
 
           <GlobalFeedTab tab={props.tab} onTabClick={props.onTabClick} />
 
+          <AuthorsFeedTab tab={props.tab} onTabClick={props.onTabClick} />
+
           <TagFilterTab tag={props.tag} />
 
         </ul>
       </div>
-
-      <ArticleList
-        pager={props.pager}
-        articles={props.articles}
-        loading={props.loading}
-        articlesCount={props.articlesCount}
-        currentPage={props.currentPage} />
+      {
+        props.tab === "authors" ?
+          <AuthorList
+            pager={props.pager}
+            authors={props.authors}
+            loading={props.loading}
+            authorsCount={props.authorsCount} />
+          :
+          <ArticleList
+            pager={props.pager}
+            articles={props.articles}
+            loading={props.loading}
+            articlesCount={props.articlesCount}
+            currentPage={props.currentPage} />
+      }
     </div>
   );
 };
