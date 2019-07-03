@@ -58,6 +58,8 @@ const Articles = {
     requests.get(`/articles?favorited=${encode(author)}&${limit(5, page)}`),
   feed: () =>
     requests.get('/articles/feed?limit=10&offset=0'),
+  authors: () =>
+    requests.get('/articles/authors'),
   get: slug =>
     requests.get(`/articles/${slug}`),
   unfavorite: slug =>
